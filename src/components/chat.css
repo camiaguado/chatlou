@@ -1,0 +1,114 @@
+.gradient-custom {
+  /* fallback for old browsers */
+  background: #fccb90;
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(
+    to bottom right,
+    rgba(252, 203, 144, 1),
+    rgba(213, 126, 235, 1)
+  );
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(
+    to bottom right,
+    rgba(252, 203, 144, 1),
+    rgba(213, 126, 235, 1)
+  );
+}
+
+.mask-custom {
+  background: rgba(24, 24, 16, 0.2);
+  border-radius: 2em;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  background-clip: padding-box;
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+}
+
+.h-400-px {
+  height: 400px;
+}
+.overflow-scroll {
+  overflow: scroll;
+}
+.overflow-y-scroll {
+  padding-right: 20px;
+  overflow-y: scroll;
+}
+::-webkit-scrollbar {
+  width: 12px; /* Adjust the width of the scrollbar */
+}
+
+/* Customize the scrollbar thumb (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background: rgba(24, 24, 16, 0.2);
+  border-radius: 2em;
+  backdrop-filter: blur(15px);
+  background-clip: padding-box;
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);  border-radius: 6px; /* Round the edges of the scrollbar thumb */
+}
+
+/* Customize the scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Change the color of the scrollbar thumb on hover */
+}
+
+/* Customize the scrollbar track when it's in the "pressed" state (clicked) */
+::-webkit-scrollbar-thumb:active {
+  background-color: #333; /* Change the color of the scrollbar thumb when clicked */
+}
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
+.h-10 {
+  height: 10vh;
+}
+.h-20 {
+  height: 20vh;
+}
+.h-40 {
+  height: 40vh;
+}
+.h-50 {
+  height: 50vh;
+}
+.h-60 {
+  height: 60vh;
+}
+.h-70 {
+  height: 70vh;
+}
+.h-80 {
+  height: 80vh;
+}
+.h-90 {
+  height: 90vh;
+}
+.h-100 {
+  height: 100vh !important;
+}
+.h-max-300px {
+  max-height: 300px;
+}
+.form-control::placeholder {
+  color: #ffffff !important; /* Change the color to your desired placeholder text color */
+}
+.form-control {
+  color: white !important;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.3);;
+  box-shadow: none !important;
+  border-radius: 2em;
+}
+.form-control:focus {
+  background-color: rgba(24, 24, 16, 0.3) !important;
+  border-radius: 2em;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+}
+.flex-reverse {
+  flex-direction: row-reverse;
+}
