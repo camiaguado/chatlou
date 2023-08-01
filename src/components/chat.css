@@ -1,19 +1,17 @@
 .gradient-custom {
-  /* fallback for old browsers */
-  background: #fccb90;
+  background: #0a699a;
 
-  /* Chrome 10-25, Safari 5.1-6 */
   background: -webkit-linear-gradient(
     to bottom right,
-    rgba(252, 203, 144, 1),
-    rgba(213, 126, 235, 1)
+
+    rgb(10 105 154),
+    rgb(145 57 141)
   );
 
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background: linear-gradient(
     to bottom right,
-    rgba(252, 203, 144, 1),
-    rgba(213, 126, 235, 1)
+    rgb(10 105 154),
+    rgb(145 57 141)
   );
 }
 
@@ -46,7 +44,8 @@
   border-radius: 2em;
   backdrop-filter: blur(15px);
   background-clip: padding-box;
-  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);  border-radius: 6px; /* Round the edges of the scrollbar thumb */
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+  border-radius: 6px; /* Round the edges of the scrollbar thumb */
 }
 
 /* Customize the scrollbar thumb on hover */
@@ -98,7 +97,7 @@
   color: white !important;
   background-color: transparent !important;
   border-color: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.3);;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow: none !important;
   border-radius: 2em;
 }
