@@ -1,18 +1,23 @@
-export const data = [
+
+export const exampleMessages = [
   {
-    text: "Hi my name is Blumb",
-    sent: true,
+    heading: 'Nuestra historia',
+    message: `¿Cuál es la historía de After?`,
+    topic: 'historia'
   },
   {
-    text: "Hi my name is Camila",
-    sent: false,
+    heading: 'Organigrama Barcelona',
+    message: 'Muéstrame el organigrama de: \n',
+    topic: 'organigrama'
   },
   {
-    text: "How are you?",
-    sent: true,
+    heading: 'Estructura de Brief',
+    message: `¿Cuáles son los puntos clave del brief? \n`,
+    topic: 'brief'
   },
   {
-    text: "Fine and you?",
-    sent: false,
-  },
-];
+    heading: 'Nuestros canales',
+    message: `¿Cuáles son los canales donde esta presente after? \n`,
+    topic: 'canales'
+  }
+]

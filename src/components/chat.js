@@ -1,100 +1,136 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBCard,
-  MDBCardBody,
-  MDBBtn,
-  MDBTypography,
-} from "mdb-react-ui-kit";
-import "./chat.css";
-import logo from "./after-logo.png";
-import blumb from "./blumb-logo.png";
-import { data } from "./data";
+import { exampleMessages } from "./data";
+import { FaTwitter, FaLinkedin, FaInstagram, FaGlobe, FaEnvelope, FaBook, FaHistory, FaSitemap, FaQuestion } from 'react-icons/fa';
+import logo from './after-logo.png'
 
 export default function App() {
-  const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState(data);
+  const [messages, setMessages] = useState([]);
+  const [pdfUrl, setPdfUrl] = useState(null);
   const containerRef = useRef(null);
 
-  const handleSendMessage = () => {
-    const updatedMessages = [...messages, { text: newMessage, sent: true }];
-    setMessages(updatedMessages);
-    setNewMessage("");
+  const socialLinks = [
+    { name: 'Twitter', icon: <FaTwitter />, url: 'https://twitter.com/SomosAfter' },
+    { name: 'LinkedIn', icon: <FaLinkedin />, url: 'https://linkedin.com/company/somosafter' },
+    { name: 'Instagram', icon: <FaInstagram />, url: 'https://instagram.com/somosafter' },
+    { name: 'Web', icon: <FaGlobe />, url: 'https://after.green' },
+    { name: 'Newsletter', icon: <FaEnvelope />, url: 'https://after.green/es/category/magazine/' },
+  ];
+
+  // Iconos para las opciones
+  const optionIcons = {
+    historia: <FaHistory />,
+    organigrama: <FaSitemap />,
+    brief: <FaBook />,
+    canales: <FaQuestion />,
+    // Agrega otros íconos según las opciones que tengas
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, []);
+
+  const fetchResponseFromServer = async (topic) => {
+    const url = process.env.REACT_APP_URL+`/pregunta?topic=${encodeURIComponent(topic)}`;
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al obtener respuesta del servidor');
+      }
+  
+      const data = await response.json();
+      if (data.respuesta.type === 'iframe') {
+        setPdfUrl(data.respuesta.data);
+        return { type: 'iframe', data: data.respuesta.data };
+      } else if (data.respuesta.type === 'text') {
+        setPdfUrl(null);  // Asegurarse de que el componente PDF se oculte
+        return { type: 'text', data: data.respuesta.data };
+      }
+    } catch (error) {
+      console.error(error);
+      return { type: 'error', data: 'Lo siento, hubo un error al obtener la respuesta.' };
+    }
+  };
+
+  const handleButtonPress = async (buttonText) => {
+    if (buttonText === 'canales') {
+      setMessages([{ text: 'Canales de After', type: 'social_links' }]);
+      setPdfUrl(null);
+    } else {
+      const response = await fetchResponseFromServer(buttonText);
+      if (response.type === 'iframe') {
+        setPdfUrl(response.data);
+        setMessages([]);
+      } else if (response.type === 'text') {
+        setMessages([{ text: response.data, type: 'text' }]);
+        setPdfUrl(null);
+      } else if (response.type === 'error') {
+        setMessages([{ text: response.data, type: 'text' }]);
+        setPdfUrl(null);
+      }
+    }
+  };
+  
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
     if (containerRef.current) {
       const container = containerRef.current;
       container.scrollTop = container.scrollHeight;
     }
-  };
+  }, [messages]);
+
   return (
-    <MDBContainer fluid className="py-4 gradient-custom h-100">
-      <MDBRow className="justify-content-center">
-        <MDBCol md="6" lg="10" xl="10">
-          <div className="mb-6">
-            <img src={logo} width={80} />
-          </div>
-          <MDBTypography listUnStyled className="text-white">
-            <div ref={containerRef} className="h-max-300px overflow-y-scroll">
-              {messages?.map((message, index) => (
-                <div
-                  key={index}
-                  className={`d-flex mb-3 gap-2 message ${
-                    message.sent === true ? "sent flex-reverse" : "received"
-                  }`}
-                >
-                  <img
-                    src={
-                      message.sent
-                        ? blumb
-                        : "https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
-                    }
-                    alt="avatar"
-                    className="rounded-circle d-flex align-self-start me-3 shadow-1-strong"
-                    width="60"
-                  />
-                  <MDBCard className="mask-custom w-100">
-                    <MDBCardBody className="p-3 d-flex gap-1">
-                      <p className="fw-bold mb-0">
-                        {message.sent ? "Blumb -" : "You -"}
-                      </p>
-                      <p className="mb-0">{message.text}</p>
-                    </MDBCardBody>
-                  </MDBCard>
-                </div>
-              ))}
-            </div>
-            <li className="mt-3 border-top">
-              <textarea
-                className="form-control p-3 mt-3"
-                placeholder="Type your message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-              />
-            </li>
-            <MDBBtn
-              onClick={handleSendMessage}
-              color="light"
-              size="md"
-              rounded
-              className="float-end mt-2"
+    <div className="h-screen flex">
+      {/* Sidebar */}
+      <div className="w-1/4 bg-black p-4 flex flex-col">
+        <img src={logo} alt="After Logo" className="mb-4 w-32 mx-auto" />
+        <h2 className="text-white text-xl mb-4 text-center">Oráculo de empresa</h2>
+        <div className="flex-1 overflow-y-auto">
+          {exampleMessages.map((message, index) => (
+            <button
+              key={index}
+              className="flex items-center gap-2 block w-full text-left text-white hover:bg-gray-800 focus:outline-none mb-2 p-2 rounded"
+              onClick={() => handleButtonPress(message.topic)}
             >
-              Send
-            </MDBBtn>
-          </MDBTypography>
-        </MDBCol>
-      </MDBRow>
-    </MDBContainer>
+              {optionIcons[message.topic]}
+              {message.heading}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content Area */}
+      <div className="w-3/4 p-8 flex items-center justify-center bg-gray-100">
+        <div ref={containerRef} className="overflow-y-auto w-full h-full">
+          {pdfUrl && (
+            <div className="w-full h-full">
+              <iframe src={pdfUrl} width="100%" height="100%" title="Document Viewer" frameBorder="0"></iframe>
+            </div>
+          )}
+          {messages.map((message, index) => (
+            <div key={index} className="flex items-start mb-2">
+              {message.type === 'social_links' ? (
+                <div className="w-full flex flex-col items-start">
+                  {socialLinks.map((link, idx) => (
+                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center mb-2 hover:underline">
+                      {link.icon}
+                      <span className="ml-2">{link.name}</span>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 rounded bg-white shadow text-gray-800">
+                  <div style={{ whiteSpace: 'pre-line' }}>
+                    {message.text}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
