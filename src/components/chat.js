@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { exampleMessages } from "./data";
-import { FaTwitter, FaLinkedin, FaInstagram, FaGlobe, FaEnvelope, FaBook, FaHistory, FaSitemap, FaQuestion } from 'react-icons/fa';
+import { FaTwitter, FaLinkedin, FaInstagram, FaGlobe, FaEnvelope, FaBook, FaHistory, FaSitemap, FaQuestion, FaRegCommentDots } from 'react-icons/fa';
 import logo from './after-logo.png'
+import { ChatTopics } from '../components/chatSection';
 
 export default function App() {
   const [messages, setMessages] = useState([]);
@@ -22,6 +23,8 @@ export default function App() {
     organigrama: <FaSitemap />,
     brief: <FaBook />,
     canales: <FaQuestion />,
+    chat: <FaRegCommentDots />,
+
     // Agrega otros íconos según las opciones que tengas
   };
 
@@ -58,7 +61,11 @@ export default function App() {
     if (buttonText === 'canales') {
       setMessages([{ text: 'Canales de After', type: 'social_links' }]);
       setPdfUrl(null);
-    } else {
+    } else if(buttonText === 'chat'){
+      setMessages([]); // Limpiar mensajes anteriores
+      setPdfUrl(null); // Asegurarse de que el componente PDF se oculte
+    }
+    else{
       const response = await fetchResponseFromServer(buttonText);
       if (response.type === 'iframe') {
         setPdfUrl(response.data);
@@ -91,7 +98,7 @@ export default function App() {
           {exampleMessages.map((message, index) => (
             <button
               key={index}
-              className="flex items-center gap-2 block w-full text-left text-white hover:bg-gray-800 focus:outline-none mb-2 p-2 rounded"
+              className="flex items-center gap-3 block w-full text-left text-white hover:bg-gray-800 focus:outline-none mb-3 p-2 rounded"
               onClick={() => handleButtonPress(message.topic)}
             >
               {optionIcons[message.topic]}
@@ -129,6 +136,9 @@ export default function App() {
               )}
             </div>
           ))}
+          {messages.length === 0 && !pdfUrl && (
+          <ChatTopics onSelectTopic={() => {}} onQuestionSelect={() => {}} />
+        )}
         </div>
       </div>
     </div>

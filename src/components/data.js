@@ -19,5 +19,10 @@ export const exampleMessages = [
     heading: 'Nuestros canales',
     message: `¿Cuáles son los canales donde esta presente after? \n`,
     topic: 'canales'
+  },
+  {
+    heading: 'CHATBOT',
+    message: `¿Cuáles son los canales donde esta presente after? \n`,
+    topic: 'chat'
   }
 ]
