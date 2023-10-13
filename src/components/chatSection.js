@@ -7,6 +7,8 @@ export function ChatTopics() {
     const [userInput, setUserInput] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const [selectedTopic, setSelectedTopic] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // Estado para el indicador de carga
+
 
     const fetchData = async (url) => {
         try {
@@ -31,13 +33,13 @@ export function ChatTopics() {
     const topicDataSources = {
         'Historia de After': (input) => fetchData(`${process.env.REACT_APP_URL}/getHistory?query=${encodeURIComponent(input)}`),
         'Empleados y ubicación': async (input) => {
-            if (input.startsWith('Quién es')) {
-                console.log('ENTRA AL QUIEN ES');
-                const employeeName = input.replace('Quién es ', '').replace('?', '');
+            const normalizedInput = normalizeText(input);
+            if (normalizedInput.startsWith('quien es')) {
+                const employeeName = normalizedInput.replace(/quien es /i, '').replace('?', ''); // Usamos una expresión regular con el flag 'i' para que sea insensible a mayúsculas/minúsculas
                 const response = await fetchData(`${process.env.REACT_APP_URL}/getRole?name=${encodeURIComponent(employeeName)}`);
                 return response.data || response;
-            } else if (input.startsWith('Quiénes trabajan en')) {
-                const cityName = input.replace('Quiénes trabajan en ', '').replace('?', '');
+            } else if (normalizedInput.startsWith('quienes trabajan en')) {
+                const cityName = normalizedInput.replace(/quienes trabajan en /i, '').replace('?', '');
                 const respuesta = await fetchData(`${process.env.REACT_APP_URL}/getTeam?city=${encodeURIComponent(cityName)}`);
                 return respuesta.team;
             }
@@ -45,31 +47,50 @@ export function ChatTopics() {
         'Nuestro Brief': (input) => fetchData(`${process.env.REACT_APP_URL}/getBrief?query=${encodeURIComponent(input)}`)
     };
 
+    function normalizeText(text) {
+        return text
+            .normalize("NFD") // Descompone caracteres acentuados en su forma canónica
+            .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
+            .toLowerCase(); // Convierte todo a minúsculas
+    }
+
     const handleSendClick = async () => {
         if (userInput.trim() !== '') {
             setChatMessages([...chatMessages, { type: 'user', text: userInput }]);
-    
+        
             const dataSource = topicDataSources[selectedTopic];
             if (dataSource) {
+                setIsLoading(true); // Mostrar el indicador de carga
                 const response = await dataSource(userInput);
-                let formattedResponse = response.data || response;
-    
+                setIsLoading(false); // Ocultar el indicador de carga después de recibir la respuesta
+
+                let formattedResponse;
+                
+                // Verifica si la respuesta tiene una propiedad 'data'
+                if (response && response.data) {
+                    formattedResponse = response.data;
+                } else if (response) {
+                    formattedResponse = response;
+                } else {
+                    formattedResponse = "Lo siento, no pude obtener una respuesta.";
+                }
+        
                 // Si la respuesta es un array, conviértelo en una lista
                 if (Array.isArray(formattedResponse)) {
                     formattedResponse = formattedResponse.map(item => `<li>${item}</li>`).join('');
                     formattedResponse = `<ul>${formattedResponse}</ul>`;
                 }
-    
+        
                 // Convertir los saltos de línea en <br> para HTML
                 formattedResponse = formattedResponse.replace(/\n/g, '<br>');
-    
+        
                 setChatMessages([...chatMessages, { type: 'user', text: userInput }, { type: 'bot', text: formattedResponse }]);
             }
-    
+        
             setUserInput('');
         }
     };
-
+    
     const handleTopicClick = (topic) => {
         let message;
         setSelectedTopic(topic.heading);
@@ -81,7 +102,7 @@ export function ChatTopics() {
                 message = 'Haz click sobre las preguntas ya definidas arriba y editala.'
                 break;
             case 'brief':
-                message = '¿Qué te gustaría saber sobre la estructura de nuestro Brief'
+                message = '¿Qué te gustaría saber sobre la estructura de nuestro Brief?'
                 break;
             default:
                 message = '¡Hola! elige un tema para consultar'
@@ -141,8 +162,8 @@ export function ChatTopics() {
                 </div>
             </div>
             
-            {/* Mensajes del chat */}
-            <div className="flex-grow overflow-y-auto p-4 bg-gray-100">
+             {/* Mensajes del chat */}
+             <div className="flex-grow overflow-y-auto p-4 bg-gray-100">
                 {chatMessages.map((message, index) => (
                     <div key={index} className={`flex items-start mb-2 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                         {message.type === 'bot' && <FaMagic className="h-5 w-5 text-gray-800 mr-2" />}
@@ -152,6 +173,12 @@ export function ChatTopics() {
 ></div>
                     </div>
                 ))}
+                {isLoading && ( // Mostrar el indicador de carga si isLoading es true
+                    <div className="flex justify-center items-center mt-4">
+                        <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900"></div>
+                        <span className="ml-2">Generando respuesta...</span>
+                    </div>
+                )}
             </div>
 
            {/* Espacio de entrada al pie de página */}
