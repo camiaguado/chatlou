@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { exampleMessages } from "./data";
-import { FaTwitter, FaLinkedin, FaInstagram, FaGlobe, FaEnvelope, FaBook, FaHistory, FaSitemap, FaQuestion, FaRegCommentDots } from 'react-icons/fa';
+import { FaTwitter, FaLinkedin, FaInstagram, FaGlobe, FaEnvelope, FaBook, FaHistory, FaSitemap, FaQuestion, FaRegCommentDots, FaBars } from 'react-icons/fa';
 import logo from './after-logo.png'
 import { ChatTopics } from '../components/chatSection';
 
@@ -8,6 +8,12 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [pdfUrl, setPdfUrl] = useState(null);
   const containerRef = useRef(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const socialLinks = [
     { name: 'Twitter', icon: <FaTwitter />, url: 'https://twitter.com/SomosAfter' },
@@ -58,6 +64,9 @@ export default function App() {
   };
 
   const handleButtonPress = async (buttonText) => {
+    // Cerrar el sidebar en dispositivos móviles después de hacer clic en una opción
+    setIsSidebarOpen(false);
+
     if (buttonText === 'canales') {
       setMessages([{ text: 'Canales de After', type: 'social_links' }]);
       setPdfUrl(null);
@@ -89,10 +98,15 @@ export default function App() {
   }, [messages]);
 
   return (
-    <div className="h-screen flex">
-      {/* Sidebar */}
-      <div className="w-1/4 bg-black p-4 flex flex-col">
-        <img src={logo} alt="After Logo" className="mb-4 w-32 mx-auto" />
+    <div className="h-screen flex flex-col md:flex-row">
+    {/* Botón de menú hamburguesa */}
+    <button className="md:hidden p-4 focus:outline-none bg-gray-800 text-white" onClick={toggleSidebar}>
+        <FaBars size={24} />
+    </button>
+
+    {/* Sidebar */}
+    <div className={`w-full md:w-1/4 bg-black p-4 flex flex-col transform md:transform-none transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+<img src={logo} alt="After Logo" className="mb-4 w-32 mx-auto" />
         <h2 className="text-white text-xl mb-4 text-center">Oráculo de empresa</h2>
         <div className="flex-1 overflow-y-auto">
           {exampleMessages.map((message, index) => (
@@ -107,9 +121,8 @@ export default function App() {
           ))}
         </div>
       </div>
-
-      {/* Content Area */}
-      <div className="w-3/4 p-8 flex items-center justify-center bg-gray-100">
+       {/* Content Area */}
+       <div className="w-full md:w-3/4 p-8 flex items-center justify-center bg-gray-100">
         <div ref={containerRef} className="overflow-y-auto w-full h-full">
           {pdfUrl && (
             <div className="w-full h-full">
