@@ -104,25 +104,9 @@ export default function App() {
         <FaBars size={24} />
     </button>
 
-    {/* Sidebar */}
-    <div className={`w-full md:w-1/4 bg-black p-4 flex flex-col transform md:transform-none transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
-<img src={logo} alt="After Logo" className="mb-4 w-32 mx-auto" />
-        <h2 className="text-white text-xl mb-4 text-center">Oráculo de empresa</h2>
-        <div className="flex-1 overflow-y-auto">
-          {exampleMessages.map((message, index) => (
-            <button
-              key={index}
-              className="flex items-center gap-3 block w-full text-left text-white hover:bg-gray-800 focus:outline-none mb-3 p-2 rounded"
-              onClick={() => handleButtonPress(message.topic)}
-            >
-              {optionIcons[message.topic]}
-              {message.heading}
-            </button>
-          ))}
-        </div>
-      </div>
+
        {/* Content Area */}
-       <div className="w-full md:w-3/4 p-8 flex items-center justify-center bg-gray-100">
+       <div className="w-full p-8 flex items-center justify-center bg-gray-100">
         <div ref={containerRef} className="overflow-y-auto w-full h-full">
           {pdfUrl && (
             <div className="w-full h-full">
